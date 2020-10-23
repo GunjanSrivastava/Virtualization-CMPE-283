@@ -1,5 +1,5 @@
 /*  
- *  cmpe283-1.c - Kernel module for CMPE283 assignment 1
+ *  cmpe283-Main.c - Kernel module for CMPE283 assignment 1
  */
 #include <linux/module.h>	/* Needed by all modules */
 #include <linux/kernel.h>	/* Needed for KERN_INFO */
@@ -11,6 +11,8 @@
  * Model specific registers (MSRs) by the module.
  * See SDM volume 4, section 2.1
  */
+
+#define IA32_VMX_PROCBASED_CTLS  0x482
 #define IA32_VMX_PROCBASED_CTLS2 0x48B
 
 /*
@@ -24,6 +26,35 @@ struct capability_info {
 	const char *name;
 };
 
+/*
+ * Primary Procbased capabilities
+ * See SDM volume 3, section 24.6.1
+ */
+//Gunjan Srivastava
+struct capability_info primary_procbased[21] =
+{
+        { 2, "Interrupt Window Exiting" },
+        { 3, "Use TSC Offsetting" },
+        { 7, "HLT Exiting" },
+        { 9, "INVLPG Exiting" },
+        { 10, "MWAIT Exiting" },
+        { 11, "RDPMC Exiting"},
+        { 12, "RDTSC Exiting"},
+        { 15, "CR3 Load Exiting"},
+        { 16, "CR3 Store Exiting"},
+        { 19, "CR8 Load Exiting"},
+        { 20, "CR8 Store Exiting"},
+        { 21, "Use TPR Shadow"},
+        { 22, "NMI Window Exiting"},
+        { 23, "MOV DR Exiting"},
+        { 24, "Unconditional I/O Exiting"},
+        { 25, "Use I/O Bitmaps"},
+        { 27, "Monitor Trap Flag"},
+        { 28, "Use MSR Bitmaps"},
+        { 29, "MONITOR Exiting"},
+        { 30, "PAUSE Exiting"},
+        { 31, "Activate Secondary Controls"}
+};
 
 /*
  * Secondary Procbased capabilities
@@ -104,6 +135,12 @@ detect_vmx_features(void)
 {
 	uint32_t lo, hi;
 
+	/* Primary ProcBased controls */
+    rdmsr(IA32_VMX_PROCBASED_CTLS, lo, hi);
+    pr_info("Primary ProcBased Controls MSR: 0x%llx\n",
+        (uint64_t)(lo | (uint64_t)hi << 32));
+    report_capability(primary_procbased, 21, lo, hi);
+
 	/* Secondary Procbased controls */
 	rdmsr(IA32_VMX_PROCBASED_CTLS2, lo, hi);
 	pr_info("Secondary Procbased Controls MSR: 0x%llx\n",
@@ -142,4 +179,3 @@ cleanup_module(void)
 {
 	printk(KERN_INFO "CMPE 283 Assignment 1 Module Exits\n");
 }
-
