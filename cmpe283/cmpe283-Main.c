@@ -11,7 +11,7 @@
  * Model specific registers (MSRs) by the module.
  * See SDM volume 4, section 2.1
  */
-#define IA32_VMX_PINBASED_CTLS	0x481
+#define IA32_VMX_PROCBASED_CTLS2 0x48B
 
 /*
  * struct caapability_info
@@ -26,16 +26,40 @@ struct capability_info {
 
 
 /*
- * Pinbased capabilities
+ * Secondary Procbased capabilities
  * See SDM volume 3, section 24.6.1
  */
-struct capability_info pinbased[5] =
+//Anupama Kurudi
+struct capability_info secondary_procbased[27] =
 {
-	{ 0, "External Interrupt Exiting" },
-	{ 3, "NMI Exiting" },
-	{ 5, "Virtual NMIs" },
-	{ 6, "Activate VMX Preemption Timer" },
-	{ 7, "Process Posted Interrupts" }
+	{ 0, "Virtualize APIC accesses" },
+	{ 1, "Enable EPT" },
+	{ 2, "Descriptor Table Exiting" },
+	{ 3, "Enable RDTSCP" },
+	{ 4, "Virtualize x2APIC Mode" },
+	{ 5, "Enable VPID" },
+	{ 6, "WBINVD Exiting" },
+	{ 7, "Unrestricted Guest" },
+	{ 8, "APIC Register Virtualization" },
+	{ 9, "Virtual Interrupt Delivery" },
+	{ 10, "PAUSE Loop Exiting" },
+	{ 11, "RDRAND Exiting" },
+	{ 12, "Enable INVPCID" },
+	{ 13, "Enable VM Functions" },
+	{ 14, "VMCS Shadowing" },
+	{ 15, "Enable ENCLS Exiting" },
+	{ 16, "RDSEED Exiting" },
+	{ 17, "Enable PML" },
+	{ 18, "EPT-violation #VE" },
+	{ 19, "Conceal VMX from PT" },
+	{ 20, "Enable XSAVES/XRSTORS" },
+	{ 22, "Mode-based Execute Control for EPT" },
+	{ 23, "Sub Page Write Permissions for EPT" },
+	{ 24, "Intel PT Uses Guest Physical Addresses" },
+	{ 25, "Use TSC Scaling" },
+	{ 26, "Enable User Wait and Pause" },
+	{ 28, "Enable ENCLV Exiting" }
+
 };
 
 /*
@@ -80,11 +104,11 @@ detect_vmx_features(void)
 {
 	uint32_t lo, hi;
 
-	/* Pinbased controls */
-	rdmsr(IA32_VMX_PINBASED_CTLS, lo, hi);
-	pr_info("Pinbased Controls MSR: 0x%llx\n",
+	/* Secondary Procbased controls */
+	rdmsr(IA32_VMX_PROCBASED_CTLS2, lo, hi);
+	pr_info("Secondary Procbased Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
-	report_capability(pinbased, 5, lo, hi);
+	report_capability(secondary_procbased, 27, lo, hi);
 }
 
 /*
@@ -118,3 +142,4 @@ cleanup_module(void)
 {
 	printk(KERN_INFO "CMPE 283 Assignment 1 Module Exits\n");
 }
+
