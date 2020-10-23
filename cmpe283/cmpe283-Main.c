@@ -14,6 +14,9 @@
 
 #define IA32_VMX_PROCBASED_CTLS  0x482
 #define IA32_VMX_PROCBASED_CTLS2 0x48B
+#define IA32_VMX_EXIT_CTLS 0x483
+
+
 
 /*
  * struct caapability_info
@@ -56,6 +59,7 @@ struct capability_info primary_procbased[21] =
         { 31, "Activate Secondary Controls"}
 };
 
+
 /*
  * Secondary Procbased capabilities
  * See SDM volume 3, section 24.6.1
@@ -90,6 +94,30 @@ struct capability_info secondary_procbased[27] =
 	{ 25, "Use TSC Scaling" },
 	{ 26, "Enable User Wait and Pause" },
 	{ 28, "Enable ENCLV Exiting" }
+
+};
+
+/*
+ * VM-Exit capabilities
+ * See SDM volume 3, section 24.7.1
+ */
+//Anupama Kurudi
+struct capability_info vm_exit[14] =
+{
+	{ 2, "Save Debug Controls" },
+	{ 9, "Host Address Space Size" },
+	{ 12, "Load IA32_PERF_GLOBAL_CTRL" },
+	{ 15, "Acknowledge Interrupt on Exit" },
+	{ 18, "Save IA32_PAT" },
+	{ 19, "Load IA32_PAT" },
+	{ 20, "Save IA32_EFER" },
+	{ 21, "Load IA32_EFER" },
+	{ 22, "Save VMX- Preemption Timer Value" },
+	{ 23, "Clear IA32_BNDCFGS" },
+	{ 24, "Conceal VMX from PT" },
+	{ 25, "Clear IA32_RTIT_CTL" },
+	{ 28, "Load CET state" },
+	{ 29, "Load PKRS" }
 
 };
 
@@ -146,6 +174,12 @@ detect_vmx_features(void)
 	pr_info("Secondary Procbased Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
 	report_capability(secondary_procbased, 27, lo, hi);
+
+	/* VM-Exit controls */
+	rdmsr(IA32_VMX_EXIT_CTLS, lo, hi);
+	pr_info("VM-Exit Controls MSR: 0x%llx\n",
+		(uint64_t)(lo | (uint64_t)hi << 32));
+	report_capability(vm_exit, 14, lo, hi);
 }
 
 /*
