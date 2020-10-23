@@ -14,6 +14,7 @@
 
 #define IA32_VMX_PROCBASED_CTLS  0x482
 #define IA32_VMX_PROCBASED_CTLS2 0x48B
+#define IA32_VMX_ENTRY_CTLS 0x484
 #define IA32_VMX_EXIT_CTLS 0x483
 
 
@@ -98,6 +99,28 @@ struct capability_info secondary_procbased[27] =
 };
 
 /*
+ * VM entry capabilities
+ * See SDM volume 3, section 24.8.1
+ */
+//Gunjan Srivastava
+struct capability_info vm_entry[12] =
+{
+        { 2, "Load Debug Controls" },
+        { 9, "IA-32e Mode Guest" },
+        { 10, "Entry to SMM"},
+        { 11, "Deactivate Dual Monitor Treatment"},
+        { 13, "Load IA32 PERF GLOBA L_CTRL"},
+        { 14, "Load IA32_PAT"},
+        { 15, "Load IA32_EFER"},
+        { 16, "Load IA32_BNDCFGS"},
+        { 17, "Conceal VMX From PT"},
+        { 18, "Load IA32_RTIT_CTL"},
+        { 20, "Load CET state"},
+        { 22, "Load PKRS"}
+};
+
+
+/*
  * VM-Exit capabilities
  * See SDM volume 3, section 24.7.1
  */
@@ -174,6 +197,12 @@ detect_vmx_features(void)
 	pr_info("Secondary Procbased Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
 	report_capability(secondary_procbased, 27, lo, hi);
+
+	/* VM Entry controls */
+    rdmsr(IA32_VMX_ENTRY_CTLS, lo, hi);
+    pr_info("VM Entry Controls MSR: 0x%llx\n",
+        (uint64_t)(lo | (uint64_t)hi << 32));
+    report_capability(vm_entry, 12, lo, hi);
 
 	/* VM-Exit controls */
 	rdmsr(IA32_VMX_EXIT_CTLS, lo, hi);
