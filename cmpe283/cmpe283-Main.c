@@ -11,7 +11,7 @@
  * Model specific registers (MSRs) by the module.
  * See SDM volume 4, section 2.1
  */
-
+#define IA32_VMX_PINBASED_CTLS     0x481
 #define IA32_VMX_PROCBASED_CTLS  0x482
 #define IA32_VMX_PROCBASED_CTLS2 0x48B
 #define IA32_VMX_ENTRY_CTLS 0x484
@@ -29,7 +29,15 @@ struct capability_info {
 	uint8_t bit;
 	const char *name;
 };
-
+/* * Pinbased capabilities * See SDM volume 3, section 24.6.1 */
+struct capability_info pinbased[5] =
+{
+	{ 0, "External Interrupt Exiting" },
+	{ 3, "NMI Exiting" },
+	{ 5, "Virtual NMIs" },
+	{ 6, "Activate VMX Preemption Timer" },
+	{ 7, "Process Posted Interrupts" }
+};
 /*
  * Primary Procbased capabilities
  * See SDM volume 3, section 24.6.1
@@ -186,6 +194,12 @@ detect_vmx_features(void)
 {
 	uint32_t lo, hi;
 
+	/* Pinbased controls */
+	rdmsr(IA32_VMX_PINBASED_CTLS, lo, hi);
+	pr_info("Pinbased Controls MSR: 0x%llx\n",
+		(uint64_t)(lo | (uint64_t)hi << 32));
+	report_capability(pinbased, 5, lo, hi);
+	
 	/* Primary ProcBased controls */
     rdmsr(IA32_VMX_PROCBASED_CTLS, lo, hi);
     pr_info("Primary ProcBased Controls MSR: 0x%llx\n",
