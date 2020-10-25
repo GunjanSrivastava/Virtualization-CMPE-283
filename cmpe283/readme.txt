@@ -1,3 +1,68 @@
+Assignment1: Discovering VMX Features
+
+Group Members: 
+Anupama Kurudi (anupama.kurudi@sjsu.edu )
+Gunjan Srivastava (gunjan.srivastava@sjsu.edu)
+
+Course: CMPE-283 Sec 48 Virtualization Technologies
+
+GitHub: 
+
+Problem:
+Your assignment is to create a Linux kernel module that will query various MSRs to determine
+virtualization features available in your CPU. This module will report (via the system message log) the
+features it discovers.
+
+Questions 1:
+For each member in your team, provide 1 paragraph detailing what parts of the lab that member
+implemented / researched. (You may skip this question if you are doing the lab by yourself).
+
+Answer:
+Both the team members set up the environment and configured VM fusion to host nested VMs on their
+individual machines (Mac). The instructions were equally divided. 
+
+ We worked on  IA32_VMX_PINBASED_CTLS together to understand how it works.
+
+Gunjan Srivastav implemented 2 instructions: 
+IA32_VMX_PROCBASED_CTLS - 0x482  - Use this MSR for proc based controls if no true
+controls capability
+
+IA32_VMX_ENTRY_CTLS - 0x484 - Use this MSR for entry controls if no true
+controls capability
+
+
+Anupama Kurudi implemented 2 instructions: 
+IA32_VMX_PROCBASED_CTLS2 - 0x48B - Use this MSR for secondary procbased
+controls, if available
+
+IA32_VMX_EXIT_CTLS - 0x483 - Use this MSR for exit controls if no true
+controls capability
+
+All of the code has been committed from their respective machines to the common Git repository.
+
+Question 2: 
+Describe in detail the steps you used to complete the assignment. Consider your reader to be someone
+skilled in software development but otherwise unfamiliar with the assignment. Good answers to this
+question will be recipes that someone can follow to reproduce your development steps.
+
+Answer: 
+1. Download and install VM Fusion with a compatible version to your local environment.
+2. Install Ubuntu on VM Fusion
+3. In the Settings tab, under Memory & Processor - enable nested vms and increase the disk space to the required limit
+4. Install KVM
+5. Install CentOS on KVM as a nested VM and exit CentOS
+6. In the Ubuntu VM, fork and clone the master Git repository
+7. Create the cmpe283 folder and add MakeFile
+8. Write the code to know about the VMX CPU capabilities in cmpe283-Main.c by referring to the Intel SDM for each of the corresponding controls and make appropriate changes.
+9. Update the Make file to point to  cmpe283-Main.o and run command - make
+10. The cmp283-Main.ko file gets generated
+11. Run command - sudo insmod ./cmpe283-Main.ko
+12. Run command - dmesg , to view the details (Refer: Output 1)
+13. If the previous module has to be removed, run command - sudo rmmod ./cmpe283-Main.ko
+
+
+Output 1:
+
 [21708.856572] CMPE 283 Assignment 1 Module Start
 [21708.856575] Primary ProcBased Controls MSR: 0xfff9fffe0401e172
 [21708.856576]   Interrupt Window Exiting: Can set=Yes, Can clear=Yes
