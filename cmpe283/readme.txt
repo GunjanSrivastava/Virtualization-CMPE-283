@@ -61,7 +61,7 @@ Answer:
 13. If the previous module has to be removed, run command - sudo rmmod ./cmpe283-Main.ko
 
 
-Output 1:
+Output 1: 
 
 [21708.856572] CMPE 283 Assignment 1 Module Start
 [21708.856575] Primary ProcBased Controls MSR: 0xfff9fffe0401e172
