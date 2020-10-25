@@ -1,29 +1,27 @@
-Assignment1: Discovering VMX Features
+# Assignment1: Discovering VMX Features
 
-Group Members: 
+# Group Members: 
 Anupama Kurudi (anupama.kurudi@sjsu.edu )
 Gunjan Srivastava (gunjan.srivastava@sjsu.edu)
 
-Course: CMPE-283 Sec 48 Virtualization Technologies
+# Course: CMPE-283 Sec 48 Virtualization Technologies
 
-GitHub: 
-
-Problem:
+# Problem:
 Your assignment is to create a Linux kernel module that will query various MSRs to determine
 virtualization features available in your CPU. This module will report (via the system message log) the
 features it discovers.
 
-Questions 1:
+# Questions 1:
 For each member in your team, provide 1 paragraph detailing what parts of the lab that member
 implemented / researched. (You may skip this question if you are doing the lab by yourself).
 
-Answer:
+# Answer:
 Both the team members set up the environment and configured VM fusion to host nested VMs on their
 individual machines (Mac). The instructions were equally divided. 
 
- We worked on  IA32_VMX_PINBASED_CTLS together to understand how it works.
+We worked on  IA32_VMX_PINBASED_CTLS together to understand how it works.
 
-Gunjan Srivastav implemented 2 instructions: 
+## Gunjan Srivastav implemented 2 instructions: 
 IA32_VMX_PROCBASED_CTLS - 0x482  - Use this MSR for proc based controls if no true
 controls capability
 
@@ -31,7 +29,7 @@ IA32_VMX_ENTRY_CTLS - 0x484 - Use this MSR for entry controls if no true
 controls capability
 
 
-Anupama Kurudi implemented 2 instructions: 
+## Anupama Kurudi implemented 2 instructions: 
 IA32_VMX_PROCBASED_CTLS2 - 0x48B - Use this MSR for secondary procbased
 controls, if available
 
@@ -40,12 +38,12 @@ controls capability
 
 All of the code has been committed from their respective machines to the common Git repository.
 
-Question 2: 
+# Question 2: 
 Describe in detail the steps you used to complete the assignment. Consider your reader to be someone
 skilled in software development but otherwise unfamiliar with the assignment. Good answers to this
 question will be recipes that someone can follow to reproduce your development steps.
 
-Answer: 
+# Answer: 
 1. Download and install VM Fusion with a compatible version to your local environment.
 2. Install Ubuntu on VM Fusion
 3. In the Settings tab, under Memory & Processor - enable nested vms and increase the disk space to the required limit
@@ -61,7 +59,7 @@ Answer:
 13. If the previous module has to be removed, run command - sudo rmmod ./cmpe283-Main.ko
 
 
-Output 1: 
+# Output 1: 
 
 [21708.856572] CMPE 283 Assignment 1 Module Start
 [21708.856575] Primary ProcBased Controls MSR: 0xfff9fffe0401e172
